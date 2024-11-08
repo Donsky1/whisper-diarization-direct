@@ -45,7 +45,7 @@ parser.add_argument(
     "-o", "--output-dir", dest="output_dir", help="name of the folder to save transcript files"
 )
 parser.add_argument(
-    "--srt", dest="with_srt", action="store_true", help="Disables SRT file generation"
+    "--srt", dest="with_srt", action="store_true", help="Enables SRT file generation"
 )
 
 parser.add_argument(
