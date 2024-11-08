@@ -2,6 +2,7 @@ import argparse
 import logging
 import os
 import re
+from pathlib import Path
 
 import faster_whisper
 import torch
@@ -40,6 +41,13 @@ parser = argparse.ArgumentParser()
 parser.add_argument(
     "-a", "--audio", help="name of the target audio file", required=True
 )
+parser.add_argument(
+    "-o", "--output-dir", dest="output_dir", help="name of the folder to save transcript files"
+)
+parser.add_argument(
+    "--srt", dest="with_srt", action="store_true", help="Disables SRT file generation"
+)
+
 parser.add_argument(
     "--no-stem",
     action="store_false",
@@ -252,10 +260,11 @@ else:
 wsm = get_realigned_ws_mapping_with_punctuation(wsm)
 ssm = get_sentences_speaker_mapping(wsm, speaker_ts)
 
-with open(f"{os.path.splitext(args.audio)[0]}.txt", "w", encoding="utf-8-sig") as f:
+with open(f"{Path(args.output_dir)}/{Path(args.audio).stem}.txt", "w", encoding="utf-8-sig") as f:
     get_speaker_aware_transcript(ssm, f)
 
-with open(f"{os.path.splitext(args.audio)[0]}.srt", "w", encoding="utf-8-sig") as srt:
-    write_srt(ssm, srt)
+if args.with_srt:
+    with open(f"{Path(args.output_dir)}/{Path(args.audio).stem}.srt", "w", encoding="utf-8-sig") as srt:
+        write_srt(ssm, srt)
 
 cleanup(temp_path)
